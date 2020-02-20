@@ -1,5 +1,7 @@
 'use strict';
 
+const DAY_STRING = ['день', 'дня', 'дней'];
+
 const DATA = {
     whichSite: ['landing', 'multiPage', 'onlineStore'],
     price: [4000, 8000, 26000],
@@ -11,7 +13,8 @@ const DATA = {
     analyticsGoogle: [850, 1350, 3000],
     sendOrder: 500,
     deadlineDay: [[2, 7], [3, 10], [7, 14]],
-    deadlinePercent: [20, 17, 15]
+    deadlinePercent: [20, 17, 15],
+    yes: 'ДА'
 };
 
 const startButton = document.querySelector('.start-button'),
@@ -21,7 +24,24 @@ const startButton = document.querySelector('.start-button'),
     endButton = document.querySelector('.end-button'),
     total = document.querySelector('.total'),
     fastRange = document.querySelector('.fast-range'),
-    totalPriceSum = document.querySelector('.total_price__sum');
+    totalPriceSum = document.querySelector('.total_price__sum'),
+    desktopTemplates = document.getElementById('desktopTemplates'),
+    adapt = document.getElementById('adapt'),
+    mobileTemplates = document.getElementById('mobileTemplates'),
+    editable = document.getElementById('editable'),
+    typeSite = document.querySelector('.type-site'),
+    maxDeadlineDay = document.querySelector('.max-deadline'),
+    rangeDeadline = document.querySelector('.range-deadline'),
+    deadlineValue = document.querySelector('.deadline-value');
+
+    
+
+
+function declOfNum(n, titles) {
+    return n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
+        0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+}
+
 
 console.dir(startButton);
 
@@ -34,12 +54,25 @@ function hideElem(elem) {
     elem.style.display = 'none';
 }
 
+function renderTextContent(total, site, maxDay, minDay) {
+
+    totalPriceSum.textContent = total;
+    typeSite.textContent = site;
+    maxDeadlineDay.textContent = declOfNum(maxDay, DAY_STRING);
+    rangeDeadline.min = minDay;
+    rangeDeadline.max = maxDay;
+    deadlineValue.textContent = declOfNum(rangeDeadline.value, DAY_STRING);
+
+}
 
 
 function priceCalculation(elem) {
     let result = 0,
         index = 0,
-        options = [];
+        options = [],
+        site = '',
+        maxDeadlineDay = DATA.deadlineDay[index][1],
+        minDeadlineDay = DATA.deadlineDay[index][0];
 
 
     if (elem.name === 'whichSite') {
@@ -54,6 +87,9 @@ function priceCalculation(elem) {
     for(const item of formCalculate.elements) {
         if (item.name === 'whichSite' && item.checked) {
             index = DATA.whichSite.indexOf(item.value);
+            site = item.dataset.site;
+            maxDeadlineDay = DATA.deadlineDay[index][1];
+            minDeadlineDay = DATA.deadlineDay[index][0];
         } else if (item.classList.contains('calc-handler') && item.checked) {
             options.push(item.value);
         }
@@ -79,6 +115,8 @@ function priceCalculation(elem) {
 
     result += DATA.price[index];
 
+    renderTextContent(result, site, maxDeadlineDay, minDeadlineDay);
+
     totalPriceSum.textContent = result;
 }
 
@@ -96,10 +134,48 @@ function handlerCallBackForm(event) {
 
     // ДИЗАЙН ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
 
-    if(document.getElementById("adapt").checked) {
-        document.getElementById("mobileTemplates").disabled = false;
+    if(adapt.checked) {
+        mobileTemplates.disabled = false;
     } else {
-        document.getElementById("mobileTemplates").disabled = true;
+        mobileTemplates.disabled = true;
+        mobileTemplates.checked = false;
+    }
+
+    // let desktopTemplatesNo = document.getElementById('desktopTemplatesNo');
+    // let adaptNo = document.getElementById('adaptNo');
+    // let mobileTemplatesNo = document.getElementById('MobileTemplatesNo');
+    // let editableNo = document.getElementById('editableNo');
+
+    let desktopTemplatesNo = document.querySelector('.desktopTemplates_value');
+    let adaptNo = document.querySelector('.adapt_value');
+    let mobileTemplatesNo = document.querySelector('.mobileTemplates_value');
+    let editableNo = document.querySelector('.editable_value');
+
+
+
+
+    if(desktopTemplates.checked) {
+        desktopTemplatesNo.textContent = "Да";
+    } else {
+        desktopTemplatesNo.textContent = "Нет";
+    }
+    
+    if(adapt.checked) {
+        adaptNo.textContent = "Да";
+    } else {
+        adaptNo.textContent = "Нет";
+    }
+
+    if(mobileTemplates.checked) {
+        mobileTemplatesNo.textContent = "Да";
+    } else {
+        mobileTemplatesNo.textContent = "Нет";
+    }
+
+    if(editable.checked) {
+        editableNo.textContent = "Да";
+    } else {
+        editableNo.textContent = "Нет";
     }
 
 
