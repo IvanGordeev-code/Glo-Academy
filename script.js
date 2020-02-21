@@ -14,7 +14,6 @@ const DATA = {
     sendOrder: 500,
     deadlineDay: [[2, 7], [3, 10], [7, 14]],
     deadlinePercent: [20, 17, 15],
-    yes: 'ДА'
 };
 
 const startButton = document.querySelector('.start-button'),
@@ -32,7 +31,11 @@ const startButton = document.querySelector('.start-button'),
     typeSite = document.querySelector('.type-site'),
     maxDeadlineDay = document.querySelector('.max-deadline'),
     rangeDeadline = document.querySelector('.range-deadline'),
-    deadlineValue = document.querySelector('.deadline-value');
+    deadlineValue = document.querySelector('.deadline-value'),
+    desktopTemplatesValue = document.querySelector('.desktopTemplates_value'),
+    adaptValue = document.querySelector('.adapt_value'),
+    mobileTemplatesValue = document.querySelector('.mobileTemplates_value'),
+    editableValue = document.querySelector('.editable_value');
 
     
 
@@ -43,7 +46,6 @@ function declOfNum(n, titles) {
 }
 
 
-console.dir(startButton);
 
 
 function showElem(elem) {
@@ -62,6 +64,13 @@ function renderTextContent(total, site, maxDay, minDay) {
     rangeDeadline.min = minDay;
     rangeDeadline.max = maxDay;
     deadlineValue.textContent = declOfNum(rangeDeadline.value, DAY_STRING);
+
+
+    adaptValue.textContent = adapt.checked ? 'Да' : 'Нет';
+    desktopTemplatesValue.textContent = desktopTemplates.checked ? 'Да' : 'Нет';
+    mobileTemplatesValue.textContent = mobileTemplates.checked ? 'Да' : 'Нет';
+    editableValue.textContent = editable.checked ? 'Да' : 'Нет';
+
 
 }
 
@@ -115,6 +124,8 @@ function priceCalculation(elem) {
 
     result += DATA.price[index];
 
+    console.log(maxDeadlineDay - rangeDeadline.value);
+
     renderTextContent(result, site, maxDeadlineDay, minDeadlineDay);
 
     totalPriceSum.textContent = result;
@@ -126,6 +137,7 @@ function handlerCallBackForm(event) {
     if (target.classList.contains('want-faster')) {
        
         target.checked ? showElem(fastRange) : hideElem(fastRange);
+        priceCalculation(target);
     }
 
     if (target.classList.contains('calc-handler')) {
@@ -141,42 +153,8 @@ function handlerCallBackForm(event) {
         mobileTemplates.checked = false;
     }
 
-    // let desktopTemplatesNo = document.getElementById('desktopTemplatesNo');
-    // let adaptNo = document.getElementById('adaptNo');
-    // let mobileTemplatesNo = document.getElementById('MobileTemplatesNo');
-    // let editableNo = document.getElementById('editableNo');
 
-    let desktopTemplatesNo = document.querySelector('.desktopTemplates_value');
-    let adaptNo = document.querySelector('.adapt_value');
-    let mobileTemplatesNo = document.querySelector('.mobileTemplates_value');
-    let editableNo = document.querySelector('.editable_value');
-
-
-
-
-    if(desktopTemplates.checked) {
-        desktopTemplatesNo.textContent = "Да";
-    } else {
-        desktopTemplatesNo.textContent = "Нет";
-    }
     
-    if(adapt.checked) {
-        adaptNo.textContent = "Да";
-    } else {
-        adaptNo.textContent = "Нет";
-    }
-
-    if(mobileTemplates.checked) {
-        mobileTemplatesNo.textContent = "Да";
-    } else {
-        mobileTemplatesNo.textContent = "Нет";
-    }
-
-    if(editable.checked) {
-        editableNo.textContent = "Да";
-    } else {
-        editableNo.textContent = "Нет";
-    }
 
 
 }
